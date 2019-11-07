@@ -27,7 +27,15 @@ public class AuthorDatabase {
         }
     }
 
-    public void updateAuthor(AuthorContainer author) {
-
+    public boolean updateAuthor(AuthorContainer author) {
+        synchronized (this) {
+            AuthorContainer v = authors.get(author.getId());
+            if (v == null) {
+                return false;
+            }
+            v.setName(author.getName());
+            v.setSurname(author.getSurname());
+            return true;
+        }
     }
 }

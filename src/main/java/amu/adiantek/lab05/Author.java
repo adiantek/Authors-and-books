@@ -26,9 +26,11 @@ public class Author {
     }
 
     @PutMapping
-    public AuthorContainer updateAuthor(@RequestBody AuthorContainer author) {
-        Database.AUTHOR.updateAuthor(author);
-        return author;
+    public ResponseEntity<AuthorContainer> updateAuthor(@RequestBody AuthorContainer author) {
+        if (Database.AUTHOR.updateAuthor(author)) {
+            return new ResponseEntity<>(author, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("{id}")
@@ -40,5 +42,4 @@ public class Author {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
 }
