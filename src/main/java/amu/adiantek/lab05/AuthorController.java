@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/author")
-public class Author {
+public class AuthorController {
 
     @PostMapping
     public AuthorContainer createAuthor(@RequestBody AuthorContainer author) {
@@ -34,12 +34,11 @@ public class Author {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteAuthor(@PathVariable("id") long id) {
-        boolean success = Database.AUTHOR.deleteAuthor(id);
+    public ResponseEntity<Void> removeAuthor(@PathVariable("id") long id) {
+        boolean success = Database.AUTHOR.removeAuthor(id);
         if (success) {
             return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

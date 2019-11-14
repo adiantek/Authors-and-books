@@ -9,6 +9,7 @@ public class AuthorDatabase {
     private long autoIncrement = 0;
 
     public void addAuthor(AuthorContainer author) {
+        author.validate();
         synchronized (this) {
             author.setId(autoIncrement);
             authors.put(autoIncrement++, author);
@@ -21,9 +22,17 @@ public class AuthorDatabase {
         }
     }
 
-    public boolean deleteAuthor(long id) {
+    public boolean removeAuthor(long id) {
         synchronized (this) {
-            return authors.remove(id) != null;
+            AuthorContainer author = authors.get(id);
+            if (author == null) {
+                return false;
+            }
+            if (!author.getBookContainers().isEmpty()) {
+                throw new IllegalArgumentException("Author has books");
+            }
+            authors.remove(id);
+            return true;
         }
     }
 
@@ -33,8 +42,12 @@ public class AuthorDatabase {
             if (v == null) {
                 return false;
             }
-            v.setName(author.getName());
-            v.setSurname(author.getSurname());
+            if (author.getName() != null && !author.getName().isEmpty()) {
+                v.setName(author.getName());
+            }
+            if (author.getSurname() != null && !author.getSurname().isEmpty()) {
+                v.setSurname(author.getSurname());
+            }
             return true;
         }
     }
